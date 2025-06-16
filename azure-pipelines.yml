@@ -1,8 +1,4 @@
 # Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - main
 
@@ -12,7 +8,7 @@ pool:
 jobs:
 - job: Build_Angular_App
   strategy:
-    maxParallel: 1  # Ensures only one job runs at a time
+    maxParallel: 1  # Correct way to limit parallelism
   steps:
   - task: NodeTool@0
     inputs:
@@ -32,4 +28,3 @@ jobs:
       PathtoPublish: 'dist/online-course-ui/browser'
       artifactName: 'drop'
       publishLocation: 'Container'
-    displayName: 'Publish Build Artifacts'
