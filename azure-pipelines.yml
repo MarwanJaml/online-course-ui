@@ -1,29 +1,23 @@
-# This is a SIMULATED pipeline file for local execution
-# Save as 'azure-pipelines-local.yml' and run via Docker (instructions below)
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
 
 jobs:
-- job: Build_Angular_App
-  displayName: 'Build Angular App Locally'
+- job: Build
   steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '20.x'
+  
   - script: |
-      echo "=== INSTALL NODE.JS ==="
-      apt-get update && apt-get install -y curl
-      curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-      apt-get install -y nodejs
-    displayName: 'Install Node.js'
-
-  - script: |
-      echo "=== INSTALL DEPENDENCIES ==="
       npm install -g @angular/cli
       npm install
-    displayName: 'Install Dependencies'
-
-  - script: |
-      echo "=== BUILD ANGULAR ==="
-      npm run build-prod
-    displayName: 'Build Angular'
-
-  - script: |
-      echo "=== ARTIFACTS CREATED ==="
-      ls -R dist/
-    displayName: 'Show Artifacts'
+    
+  - script: npm run build-prod
+    
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'dist/'
+      artifactName: 'drop'
