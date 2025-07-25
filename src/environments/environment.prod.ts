@@ -1,40 +1,31 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 import { EnvironmentConfiguration } from "../app/models/environment-configuration";
 
+const serverUrl = 'https://your-production-api.com/api'; // Update with your production URL
 
-
-const serverUrl='https://localhost:7005/api';
-
-
-// The list of file replacements can be found in `angular.json`.
 export const environment: EnvironmentConfiguration = {
-  env_name: 'dev',
+  env_name: 'prod',
   production: true,
   apiUrl: serverUrl,
   apiEndpoints: {
-    userProfile:'user-profiles'
+    userProfile: 'user-profiles'
   },
+  // Azure AD B2C Configuration - Production
   adb2cConfig: {
-    clientId: 'f9d96116-bd30-4770-b15a-f199417bc3cf',
-    readScopeUrl: 'https://karthiktechworld.onmicrosoft.com/dev/expensetracker/api/Expense.Read',
-    writeScopeUrl: 'https://karthiktechworld.onmicrosoft.com/dev/expensetracker/api/Expense.Write',
-    scopeUrls:[
-      'https://karthiktechworld.onmicrosoft.com/dev/expensetracker/api/Expense.Read',
-      'https://karthiktechworld.onmicrosoft.com/dev/expensetracker/api/Expense.Write'
+    clientId: 'f6bc2f74-9e28-4f95-b74f-97c75a16b440', // Same or create separate prod registration
+    domain: 'onlinecourseenrolment.onmicrosoft.com',
+    authorityDomain: 'makotech.b2clogin.com',
+    signUpSignInPolicyId: 'susi',
+    redirectUri: '/',
+    postLogoutRedirectUri: '/',
+    // API Scopes - Production
+    readScopeUrl: 'https://onlinecourseenrolment.onmicrosoft.com/api/User.Read',
+    writeScopeUrl: 'https://onlinecourseenrolment.onmicrosoft.com/api/User.Write',
+    scopeUrls: [
+      'https://onlinecourseenrolment.onmicrosoft.com/api/User.Read',
+      'https://onlinecourseenrolment.onmicrosoft.com/api/User.Write'
     ],
-    apiEndpointUrl: 'https://localhost:7005/api'
+    apiEndpointUrl: serverUrl, // Uses the production server URL
+    chatHubUrl: 'https://your-production-api.com/hubs/chat' // Update with production URL
   },
   cacheTimeInMinutes: 30,
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

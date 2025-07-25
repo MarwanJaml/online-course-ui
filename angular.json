@@ -22,11 +22,11 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/images/assets",
-              {
+             {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },   "src/images/assets"
+          
             ],
             "styles": [
               "src/styles.css",

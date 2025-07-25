@@ -21,7 +21,7 @@
 
   @if (courses.length > 0) {
     <div class="course-list">
-      @for (course of courses; track course) {
+      @for (course of courses; track course.courseId) {
         <div class="course-card">
           <div class="course-image">
             <img [src]="course.thumbnail" alt="{{ course.title }}">
@@ -29,22 +29,26 @@
           <div class="course-content">
             <div class="course-header">
               <h2>{{ course.title }}</h2>
-              <p class="price" >{{formatPrice(course.price)}}</p>
+              <p class="price">{{formatPrice(course.price)}}</p>
             </div>
-            <!-- <p class="description">{{ course.description }}</p> -->
             <p class="description"
               triggers="hover"
               container="body">
-              {{ course.description }}{{ course.description.length > 150 ? '...' : '' }}
+              {{ course.description.length > 150 ? course.description.substring(0, 150) + '...' : course.description }}
             </p>
             <div class="course-details">
               <span class="duration">Duration: {{ course.duration }} hours</span>
               <span class="course-type">Type: {{ course.courseType }}</span>
               <span class="seats">Seats Available: {{ course.seatsAvailable || 'N/A' }}</span>
-              <span class="rating">Rating: {{ course.userRating?.averageRating }} ({{
-              course.userRating?.totalRating }} reviews)</span>
+              <span class="rating" *ngIf="course.userRating">
+                Rating: {{ course.userRating.averageRating }} ({{ course.userRating.totalRating }} reviews)
+              </span>
             </div>
-            <a  [routerLink]="['/course/course-details']" routerLinkActive="router-link-active" class="btn btn-primary">View Details</a>
+            <!-- Fixed: Added courseId parameter to routerLink -->
+            <a [routerLink]="['/course/course-details', course.courseId]" 
+               class="btn btn-primary">
+              View Details
+            </a>
           </div>
         </div>
       }

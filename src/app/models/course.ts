@@ -25,7 +25,7 @@ export interface Course {
   sessionDetails?: SessionDetail[];
 }
 
-export interface UserReviewModel  {
+export interface UserReviewModel {
   reviewId: number;
   courseId: number;
   userId: number;
@@ -55,7 +55,7 @@ export interface CourseDetails {
   categoryId: number;
   instructorId: number;
   instructorUserId: number;
-  thumbnail:string;
+  thumbnail: string;
   startDate: string;
   endDate: string;
   category: {
@@ -68,7 +68,7 @@ export interface CourseDetails {
     averageRating: number;
     totalRating: number;
   };
-  reviews: UserReviewModel [];
+  reviews: UserReviewModel[];
   sessionDetails: SessionDetail[];
 }
 
@@ -78,5 +78,5 @@ export interface InstructorModel {
   lastName: string;
   email: string;
   bio: string;
-  userId: number;
+  userId: string;
 }
