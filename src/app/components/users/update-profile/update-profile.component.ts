@@ -58,7 +58,7 @@ export class UpdateProfileComponent implements OnInit, OnDestroy {
 
   private loadUserProfile(userId: number): void {
     this.isLoading = true;
-    this.userProfileService.getUserProfile(userId.toString()).subscribe({
+    this.userProfileService.getUserProfile(userId).subscribe({
       next: (response) => {
         this.isInstructor = this.loginService.userRoles.includes('Instructor');
         this.updateFormState();

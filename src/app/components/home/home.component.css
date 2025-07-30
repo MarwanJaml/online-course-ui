@@ -16,13 +16,15 @@
 .carousel-inner {
     border-radius: 10px;
     overflow: hidden;
-    max-height: 500px; /* Limit height */
+    max-height: 500px;
+    /* Limit height */
 }
 
 .slide-img {
     width: 100%;
     object-fit: cover;
-    height: 100%; /* Ensure images fill the carousel container */
+    height: 100%;
+    /* Ensure images fill the carousel container */
 }
 
 .text-content {
@@ -49,7 +51,7 @@ h5 {
 }
 
 .cta-btn {
-    background-color: #007bff;
+    background-color: #047e4e;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -59,7 +61,7 @@ h5 {
 }
 
 .cta-btn:hover {
-    background-color: #0056b3;
+    background-color: #047e4e;
 }
 
 .trusted-section {
@@ -72,6 +74,6 @@ h5 {
 .trusted-section h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #007bff;
+    color: #047e4e;
     margin: 0;
 }

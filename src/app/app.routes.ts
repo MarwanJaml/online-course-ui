@@ -24,14 +24,14 @@ import { courseResolver } from './resolvers/course-detail.resolver';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent ,  data: { animation: 'HomePage' }},
+  { path: 'home', component: HomeComponent, data: { animation: 'HomePage' } },
   { path: 'course/category', component: CategoryComponent },
   { path: 'course/browse', component: BrowseComponent },
   { path: 'course/category/:categoryId', component: CourseByCategoryComponent },
   {
     path: 'course/session-details/:courseId',
     component: CourseDetailsComponent,
-    resolve : {
+    resolve: {
       courseDetails: courseResolver
     }
   },

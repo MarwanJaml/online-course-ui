@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./view-user-profile.component.css']
 })
 export class ViewUserProfileComponent implements OnInit {
-  @Input() userId: number | string = ''; // Accept both number and string input
+  @Input() userId!: number; // Strictly numeric input
   user: UserModel = {
-    userId: 0, // Changed to number
+    userId: 0,
     displayName: '',
     firstName: '',
     lastName: '',
@@ -22,29 +22,35 @@ export class ViewUserProfileComponent implements OnInit {
     profilePictureUrl: '',
     bio: ''
   };
+  isLoading = true;
+  error = '';
 
   constructor(private userService: UserProfileService) { }
 
   ngOnInit(): void {
-    this.getUserProfile();
+    if (!this.userId || isNaN(this.userId)) {
+      this.error = 'Invalid user ID provided';
+      this.isLoading = false;
+      return;
+    }
+    this.loadUserProfile();
   }
 
-  getUserProfile(): void {
-    // Convert to string if needed (assuming API expects string)
-    const userIdStr = typeof this.userId === 'number'
-      ? this.userId.toString()
-      : this.userId;
-
-    this.userService.getUserProfile(userIdStr).subscribe({
-      next: (data) => {
+  private loadUserProfile(): void {
+    this.userService.getUserProfile(this.userId).subscribe({
+      next: (user) => {
         this.user = {
-          ...data,
-          userId: Number(data.userId) // Ensure userId is number
+          ...user,
+          bio: user.bio?.replace(/\n/g, '<br>') || ''
         };
-        this.user.bio = this.user.bio?.replace(/\n/g, '<br>');
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error fetching user profile', err);
+        this.error = err.status === 404
+          ? 'Profile not found'
+          : 'Failed to load profile';
+        this.isLoading = false;
+        console.error('Profile load error:', err);
       }
     });
   }

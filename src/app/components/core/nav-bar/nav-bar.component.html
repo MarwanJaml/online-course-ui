@@ -1,7 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <!-- Brand/Logo -->
-    <a class="navbar-brand" href="#">Mako</a>
+    <a class="navbar-brand" href="#">
+      <span class="logo logo-left">Mako</span>
+      <span class="logo logo-right"> Tech</span>
+    </a>
 
     <!-- Toggler for responsive design -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -27,7 +30,7 @@
           <ul class="dropdown-menu" aria-labelledby="coursesDropdown">
             <li><a class="dropdown-item" [routerLink]="['/course/enrollments']"
                 routerLinkActive="active">Enrollments</a></li>
-                <li><a class="dropdown-item" [routerLink]="['/course/browse']" routerLinkActive="active">All Courses</a>
+            <li><a class="dropdown-item" [routerLink]="['/course/browse']" routerLinkActive="active">All Courses</a>
             <li><a class="dropdown-item" [routerLink]="['/course/category']" routerLinkActive="active">Categories</a>
             </li>
           </ul>
@@ -87,31 +90,22 @@
 
       <!-- Search Box -->
       <form class="d-flex me-3">
-        <input class="form-control me-2" type="search" placeholder="Search courses" aria-label="Search" />
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
 
       <!-- Login/Logout -->
       <ul class="navbar-nav">
         <li class="nav-item d-flex align-items-center">
-           <!-- Profile Picture -->
-           <img
-           *ngIf="profilePictureUrl; else defaultAvatar"
-           [src]="profilePictureUrl"
-           alt="Profile Picture"
-           class="rounded-circle"
-           style="width: 40px; height: 40px; object-fit: cover;"
-         />
+          <!-- Profile Picture -->
+          <img *ngIf="profilePictureUrl; else defaultAvatar" [src]="profilePictureUrl" alt="Profile Picture"
+            class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
 
-         <!-- Default Avatar -->
-         <ng-template #defaultAvatar>
-           <img
-             src="../../../../assets/images/default-avatar.png"
-             alt="Default Avatar"
-             class="rounded-circle"
-             style="width: 40px; height: 40px; object-fit: cover;"
-           />
-         </ng-template>
+          <!-- Default Avatar -->
+          <ng-template #defaultAvatar>
+            <img src="" alt="Default Avatar" class="rounded-circle"
+              style="width: 40px; height: 40px; object-fit: cover;" />
+          </ng-template>
           <a class="nav-link" *ngIf="!loginDisplay" (click)="loginRedirect()">Login</a>
           <a class="nav-link" *ngIf="loginDisplay" (click)="logout()">Logout</a>
         </li>

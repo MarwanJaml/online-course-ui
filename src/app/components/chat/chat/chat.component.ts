@@ -171,7 +171,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private getUserProfile(): void {
     if (this.userId) {
-      this.userService.getUserProfile(this.userId.toString()).subscribe({
+      this.userService.getUserProfile(this.userId).subscribe({
         next: (data) => {
           this.user = {
             ...data,
@@ -187,7 +187,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.loginService.userId$
       .pipe(filter((userId): userId is number => userId !== null))
       .subscribe((userId) => {
-        this.userService.getUserProfile(userId.toString()).subscribe({
+        this.userService.getUserProfile(userId).subscribe({
           next: (data) => {
             this.loggedInUser = {
               ...data,

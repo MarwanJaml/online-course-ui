@@ -89,13 +89,18 @@ export class LoginService {
     const claimsTable = this.createClaimsTable(claims);
     this.claimsSubject.next(claimsTable);
 
-    // Convert oid/sub to number
+    // Convert oid/sub to number - improved for practice
     const oidOrSub = claims?.oid || claims?.sub || '';
     this._userId = this.convertToNumber(oidOrSub);
     this.userIdSubject.next(this._userId);
 
     this._userRoles = claims?.roles || [];
     this.userName = this.getDisplayName(claims);
+
+    // For debugging in practice - log the conversion
+    if (oidOrSub) {
+      console.log(`🔍 Practice Debug: "${oidOrSub}" -> ${this._userId}`);
+    }
   }
 
   private createClaimsTable(claims: Record<string, any>): Claim[] {
@@ -127,15 +132,27 @@ export class LoginService {
           return;
         case 'oid':
         case 'sub':
-          value = this.convertToNumber(value);
-          description = key === 'oid'
-            ? 'Immutable user identifier (as number)'
-            : 'Unique user identifier (as number)';
-          break;
+          const numericValue = this.convertToNumber(value);
+          claimsTable.push({
+            claim: key,
+            value: `${value} -> ${numericValue}`,
+            description: key === 'oid'
+              ? `Immutable user identifier (converted to: ${numericValue})`
+              : `Unique user identifier (converted to: ${numericValue})`
+          });
+          return;
         case 'roles':
           description = 'Application roles assigned to the user';
           break;
-        // ... other cases remain similar
+        case 'name':
+          description = "User's display name";
+          break;
+        case 'preferred_username':
+          description = 'Primary username (usually email)';
+          break;
+        case 'email':
+          description = "User's email address";
+          break;
         default:
           description = '';
       }
@@ -152,30 +169,39 @@ export class LoginService {
     return claimsTable;
   }
 
+  // Improved conversion function for practice
   private convertToNumber(id: any): number | null {
     if (typeof id === 'number') return id;
     if (typeof id !== 'string') return null;
 
+    // Case 1: Already numeric string
     if (/^\d+$/.test(id)) {
-      return parseInt(id, 10);
+      const num = parseInt(id, 10);
+      return num;
     }
-    return this.hashStringToNumber(id);
+
+    // Case 2: Create hash for practice (improved algorithm)
+    return this.createPracticeHash(id);
   }
 
-  private hashStringToNumber(str: string): number {
-    let hash = 0;
+  // Hash function - MUST match backend exactly
+  private createPracticeHash(str: string): number {
+    let hash = 5381; // djb2 algorithm - SAME as backend
+
     for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash |= 0;
+      hash = ((hash << 5) + hash) + str.charCodeAt(i);
+      // Remove the extra "hash & hash" to match backend exactly
     }
-    return Math.abs(hash);
+
+    // SAME logic as backend
+    return Math.abs(hash) % 2147483647;
   }
 
   private getDisplayName(claims: any): string {
     if (claims?.name) return claims.name;
     if (claims?.preferred_username) return claims.preferred_username;
-    return `${claims?.given_name || ''} ${claims?.family_name || ''}`.trim();
+    if (claims?.email) return claims.email;
+    return `${claims?.given_name || ''} ${claims?.family_name || ''}`.trim() || 'Unknown User';
   }
 
   private resetUserData(): void {
@@ -198,7 +224,7 @@ export class LoginService {
           this.authService.instance.setActiveAccount(response.account);
           this.processTokenClaims(response.account?.idTokenClaims);
         },
-        error: (error) => console.error('Login failed:', error)
+        error: (error) => console.error('❌ Login failed:', error)
       });
     } else {
       this.authService.loginRedirect(loginRequest);
@@ -235,5 +261,15 @@ export class LoginService {
       case 'exp': return '"Expiration" - token not valid after this time';
       default: return '';
     }
+  }
+
+  // Helper method for practice - show current user info
+  getCurrentUserDebugInfo(): void {
+    console.log('🔍 Current User Debug Info:', {
+      userId: this._userId,
+      userName: this.userName,
+      roles: this._userRoles,
+      isLoggedIn: this.isLoggedIn
+    });
   }
 }

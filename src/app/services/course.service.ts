@@ -10,7 +10,7 @@ export class CourseService {
   private baseUrl = `${environment.apiUrl}/Course`;
   private apiUrl = `${environment.apiUrl}`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCoursesByCategoryId(categoryId: number): Observable<Course[]> {
     return this.http.get<Course[]>(`${this.baseUrl}/Category/${categoryId}`);

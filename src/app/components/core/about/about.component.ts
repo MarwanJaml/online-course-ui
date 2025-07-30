@@ -17,7 +17,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   user: UserModel = {
-    userId: 0, // Changed to number
+    userId: 0,
     displayName: '',
     firstName: '',
     lastName: '',
@@ -36,7 +36,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getUserProfile();
+    this.loadUserProfile();
   }
 
   ngOnDestroy(): void {
@@ -44,33 +44,37 @@ export class AboutComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  getUserProfile(): void {
+  private loadUserProfile(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
     this.loginService.userId$
       .pipe(
         takeUntil(this.destroy$),
-        filter((userId: number | null): userId is number => userId !== null),
-        switchMap((userId: number) => this.userService.getUserProfile(userId.toString()))
+        filter((userId): userId is number => userId !== null),
+        switchMap((userId: number) => {
+          return this.userService.getUserProfile(userId);
+        })
       )
       .subscribe({
-        next: (data) => {
-          this.user = {
-            ...data,
-            userId: Number(data.userId) // Ensure userId is number
-          };
+        next: (user) => {
+          this.user = user;
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Error fetching user profile', err);
-          this.errorMessage = err.message || 'Failed to load user profile';
+          this.handleProfileError(err);
           this.isLoading = false;
-
-          if (err.status === 404) {
-            this.errorMessage = 'User profile not found. Please complete your profile setup.';
-          }
         }
       });
+  }
+
+  private handleProfileError(error: any): void {
+    console.error('Profile load failed:', error);
+
+    if (error.status === 404) {
+      this.errorMessage = 'Profile not found. Please complete your profile setup.';
+    } else {
+      this.errorMessage = 'Failed to load profile data. Please try again later.';
+    }
   }
 }

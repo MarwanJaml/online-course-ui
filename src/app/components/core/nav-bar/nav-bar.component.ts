@@ -89,7 +89,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
         takeUntil(this._destroying$)
       )
       .subscribe(userId => {
-        this.loadUserProfile(userId.toString());
+        this.loadUserProfile(userId);
       });
 
     this.loginService.claims$
@@ -109,15 +109,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadUserProfile(userId: string): void {
+  private loadUserProfile(userId: number): void {
     this.isLoading = true;
     this.userService.getUserProfile(userId).subscribe({
       next: (profile) => {
-        this.profilePictureUrl = profile.profilePictureUrl || 'assets/images/default-avatar.png';
+        this.profilePictureUrl = profile.profilePictureUrl || '';
         this.isLoading = false;
       },
       error: () => {
-        this.profilePictureUrl = 'assets/images/default-avatar.png';
+        this.profilePictureUrl = '';
         this.isLoading = false;
       }
     });

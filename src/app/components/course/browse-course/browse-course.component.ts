@@ -12,25 +12,23 @@ import { CommonModule } from '@angular/common';
   styleUrl: './browse-course.component.css'
 })
 export class BrowseCourseComponent implements OnInit, OnChanges {
-  constructor(private courseService: CourseService) {}
-  
+  constructor(private courseService: CourseService) { }
+
   courses: Course[] = [];
   loading: boolean = false;
   error: string | null = null;
-  
+
   @Input() categoryId: number = 0;
 
   ngOnInit(): void {
-    // Load courses when component initializes if categoryId is provided
-    if (this.categoryId > 0) {
-      this.getCourses(this.categoryId);
-    }
+    console.log('BrowseCourseComponent ngOnInit, categoryId:', this.categoryId);
+    this.loadCourses();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Only load courses if categoryId actually changed and is valid
-    if (changes['categoryId'] && this.categoryId > 0) {
-      this.getCourses(this.categoryId);
+    console.log('BrowseCourseComponent ngOnChanges:', changes);
+    if (changes['categoryId']) {
+      this.loadCourses();
     }
   }
 
@@ -38,34 +36,62 @@ export class BrowseCourseComponent implements OnInit, OnChanges {
     return `$${price.toFixed(2)}`;
   }
 
-  getCourses(categoryId: number) {
-    if (categoryId <= 0) {
-      this.courses = [];
-      return;
+  loadCourses(): void {
+    if (this.categoryId > 0) {
+      console.log('Loading courses for specific category:', this.categoryId);
+      this.getCoursesByCategory(this.categoryId);
+    } else {
+      console.log('Loading ALL courses (no category specified)');
+      this.getAllCourses();
     }
+  }
 
+  // Load courses for specific category
+  getCoursesByCategory(categoryId: number): void {
+    console.log(' Making HTTP request for categoryId:', categoryId);
     this.loading = true;
     this.error = null;
 
     this.courseService.getCoursesByCategoryId(categoryId).subscribe({
       next: (data) => {
-        this.courses = data;
+        console.log(' Category courses loaded:', data);
+        this.courses = data || [];
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading courses:', error);
+        console.log(' Error loading category courses:', error);
+        this.error = 'Failed to load courses for this category.';
+        this.loading = false;
+        this.courses = [];
+      }
+    });
+  }
+
+  // Load ALL courses
+  getAllCourses(): void {
+    console.log(' Making HTTP request for ALL courses');
+    this.loading = true;
+    this.error = null;
+
+    this.courseService.getAllCourses().subscribe({
+      next: (data) => {
+        console.log(' ALL courses loaded:', data);
+        console.log('Total courses count:', data?.length || 0);
+        this.courses = data || [];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.log(' Error loading all courses:', error);
+        console.error('Full error:', error);
         this.error = 'Failed to load courses. Please try again.';
         this.loading = false;
-        
-        // Optional: Fallback to mock data
-        // this.courses = MOCK_COURSES.filter(f => f.categoryId === categoryId);
+        this.courses = [];
       }
     });
   }
 
   retry(): void {
-    if (this.categoryId > 0) {
-      this.getCourses(this.categoryId);
-    }
+    console.log('Retry clicked');
+    this.loadCourses();
   }
 }
